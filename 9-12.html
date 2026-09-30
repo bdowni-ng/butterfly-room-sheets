@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>Butterfly Room Data Sheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --page: #f4f8f6;
+      --paper: #ffffff;
+      --paper-soft: #edf4f0;
+      --ink: #14231d;
+      --muted: #53685f;
+      --line: #ccdad3;
+      --green: #176b4c;
+      --green-strong: #0c573a;
+      --green-soft: #dff1e8;
+      --blue: #245a84;
+      --blue-soft: #e4eef7;
+      --gold: #8d5d0a;
+      --gold-soft: #fff1cf;
+      --slate: #58656e;
+      --slate-soft: #e8edf0;
+      --danger: #9e3a31;
+      --shadow: 0 18px 45px rgba(24, 55, 42, .09);
+      --radius: 18px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: #101714;
+        --paper: #18231f;
+        --paper-soft: #1e2e27;
+        --ink: #edf6f1;
+        --muted: #aec0b7;
+        --line: #344a40;
+        --green: #6bc59e;
+        --green-strong: #8cdbb7;
+        --green-soft: #173d2e;
+        --blue: #86b8df;
+        --blue-soft: #1b3447;
+        --gold: #e8bd66;
+        --gold-soft: #45381b;
+        --slate: #b7c3ca;
+        --slate-soft: #303b40;
+        --danger: #f49b91;
+        --shadow: 0 20px 50px rgba(0, 0, 0, .28);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { min-width: 0; background: var(--page); }
+    body {
+      margin: 0;
+      min-width: 0;
+      min-height: 100vh;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+
+    .page {
+      width: min(1080px, 100%);
+      margin: 0 auto;
+      padding: 24px 18px calc(48px + env(safe-area-inset-bottom));
+    }
+
+    .session-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+      gap: 24px;
+      align-items: end;
+      padding: 20px 0 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .session-head h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4.4rem);
+      line-height: .98;
+      letter-spacing: -.055em;
+      font-weight: 700;
+    }
+
+    .session-head p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 620px;
+      font-size: .98rem;
+    }
+
+    .session-head .session-time {
+      margin-top: 8px;
+      color: var(--green-strong);
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      font-weight: 600;
+      letter-spacing: -.02em;
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: var(--paper);
+      color: var(--ink);
+      outline: none;
+    }
+
+    .field input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .legend-item {
+      min-width: 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+    }
+
+    .legend-item b {
+      display: block;
+      margin-bottom: 3px;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: .9rem;
+    }
+
+    .legend-item span { display: block; color: var(--muted); font-size: .78rem; line-height: 1.35; }
+    .legend-item.r1 b { color: var(--green); }
+    .legend-item.r2 b { color: var(--blue); }
+    .legend-item.zero b { color: var(--gold); }
+    .legend-item.absent b { color: var(--slate); }
+
+    .progress-block {
+      display: grid;
+      grid-template-columns: auto minmax(140px, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 0 12px;
+    }
+
+    .progress-block strong { font-size: .92rem; }
+    .progress-block span { color: var(--muted); font-size: .83rem; }
+    .track { height: 7px; border-radius: 99px; background: var(--line); overflow: hidden; }
+    .fill { height: 100%; width: 0; background: var(--green); transition: width .18s ease; }
+
+    .intervals {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .interval {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+    }
+
+    .interval.complete { border-color: color-mix(in srgb, var(--green) 45%, var(--line)); }
+    .time {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-weight: 600;
+      font-size: .78rem;
+      line-height: 1.4;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .choice {
+      min-width: 0;
+      min-height: 42px;
+      padding: 8px 4px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: var(--paper-soft);
+      color: var(--ink);
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .choice:hover { border-color: var(--muted); }
+    .choice:focus-visible, .action:focus-visible, .text-button:focus-visible {
+      outline: 3px solid var(--green-soft);
+      outline-offset: 2px;
+    }
+
+    .choice[data-code="r1"].selected { background: var(--green-soft); color: var(--green-strong); border-color: var(--green); }
+    .choice[data-code="r2"].selected { background: var(--blue-soft); color: var(--blue); border-color: var(--blue); }
+    .choice[data-code="zero"].selected { background: var(--gold-soft); color: var(--gold); border-color: var(--gold); }
+    .choice[data-code="x"].selected { background: var(--slate-soft); color: var(--slate); border-color: var(--slate); }
+
+    .summary {
+      margin-top: 26px;
+      padding: 22px;
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .summary-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .summary h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.02em; }
+    .summary-status { color: var(--muted); font-size: .86rem; }
+
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .total { min-width: 0; padding: 16px 10px 14px; text-align: center; }
+    .total + .total { border-left: 1px solid var(--line); }
+    .total output { display: block; font-size: 1.55rem; font-weight: 700; line-height: 1; }
+    .total span { display: block; margin-top: 7px; color: var(--muted); font-size: .75rem; line-height: 1.25; }
+
+    .actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
+    .action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--paper-soft);
+      color: var(--ink);
+      padding: 11px 16px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .action.primary { background: var(--green-strong); border-color: var(--green-strong); color: #fff; }
+    .action:disabled, .action[aria-disabled="true"] { cursor: not-allowed; opacity: .46; }
+
+    .helper {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: .79rem;
+      line-height: 1.5;
+    }
+
+    .reset-row { display: flex; justify-content: flex-end; margin-top: 12px; }
+    .text-button {
+      border: 0;
+      background: transparent;
+      color: var(--danger);
+      padding: 8px 2px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: .82rem;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 20;
+      left: 50%;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      transform: translate(-50%, 120px);
+      max-width: calc(100vw - 36px);
+      padding: 11px 16px;
+      border-radius: 10px;
+      background: var(--ink);
+      color: var(--paper);
+      font-size: .86rem;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transition: transform .2s ease, opacity .2s ease;
+      pointer-events: none;
+    }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    @media (max-width: 780px) {
+      .page { padding-top: 12px; }
+      .session-head { grid-template-columns: 1fr; align-items: start; gap: 18px; }
+      .session-head h1 { font-size: clamp(2.35rem, 12vw, 3.4rem); }
+      .fields { grid-template-columns: 1fr 1fr; }
+      .legend { grid-template-columns: 1fr 1fr; }
+      .intervals { grid-template-columns: 1fr; }
+      .summary { padding: 18px 14px; }
+    }
+
+    @media (max-width: 480px) {
+      .page { padding-left: 12px; padding-right: 12px; }
+      .fields { grid-template-columns: 1fr; }
+      .legend-item { padding: 10px 11px; }
+      .progress-block { grid-template-columns: 1fr auto; }
+      .progress-block .track { grid-column: 1 / -1; grid-row: 2; }
+      .interval { grid-template-columns: 1fr; gap: 8px; padding: 10px; }
+      .time { font-size: .81rem; }
+      .choice { min-height: 44px; }
+      .totals { grid-template-columns: repeat(3, 1fr); }
+      .total:nth-child(4), .total:nth-child(5) { border-top: 1px solid var(--line); }
+      .total:nth-child(4) { border-left: 0; }
+      .actions { grid-template-columns: 1fr; }
+      .summary-top { align-items: flex-start; flex-direction: column; gap: 4px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .001ms !important; }
+    }
+
+    @media print {
+      body { background: #fff; color: #111; }
+      .page { width: 100%; padding: 0; }
+      .session-head { padding-top: 0; }
+      .legend { margin: 12px 0; }
+      .intervals { gap: 4px; }
+      .interval { box-shadow: none; break-inside: avoid; padding: 7px; }
+      .choice:not(.selected) { color: #777; background: #fff; }
+      .summary { box-shadow: none; border: 1px solid #bbb; margin-top: 12px; }
+      .actions, .reset-row, .helper, .toast { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="session-head" aria-labelledby="session-title">
+      <div>
+        <h1 id="session-title">Butterfly Room</h1>
+        <p class="session-time">9:00 AM–12:00 PM</p>
+        <p>Mark each 10-minute interval. R1 and R2 may both be selected. Choosing <strong>0</strong> or <strong>X</strong> clears behavior selections for that interval.</p>
+      </div>
+      <div class="fields">
+        <div class="field">
+          <label for="session-date">SESSION DATE</label>
+          <input id="session-date" type="date" aria-label="Session date" />
+        </div>
+        <div class="field">
+          <label for="staff-name">STAFF NAME OR INITIALS</label>
+          <input id="staff-name" type="text" autocomplete="name" maxlength="80" placeholder="Optional" />
+        </div>
+      </div>
+    </section>
+
+    <section class="legend" aria-label="Behavior code key">
+      <div class="legend-item r1"><b>R1</b><span>Dangerous behavior</span></div>
+      <div class="legend-item r2"><b>R2</b><span>Non-dangerous / disruptive</span></div>
+      <div class="legend-item zero"><b>0</b><span>Present; no behaviors</span></div>
+      <div class="legend-item absent"><b>X</b><span>Not present</span></div>
+    </section>
+
+    <section aria-label="Interval data">
+      <div class="progress-block">
+        <strong id="progress-label">0 of 18 complete</strong>
+        <div class="track" aria-hidden="true"><div class="fill" id="progress-fill"></div></div>
+        <span id="progress-note">18 remaining</span>
+      </div>
+      <div class="intervals" id="intervals"></div>
+    </section>
+
+    <section class="summary" aria-labelledby="summary-title">
+      <div class="summary-top">
+        <h2 id="summary-title">Session summary</h2>
+        <span class="summary-status" id="summary-status">Complete all intervals to finish</span>
+      </div>
+      <div class="totals">
+        <div class="total"><output id="count-r1">0</output><span>R1 intervals</span></div>
+        <div class="total"><output id="count-r2">0</output><span>R2 intervals</span></div>
+        <div class="total"><output id="count-zero">0</output><span>No behavior</span></div>
+        <div class="total"><output id="count-x">0</output><span>Not present</span></div>
+        <div class="total"><output id="count-observed">0</output><span>Observed</span></div>
+      </div>
+      <div class="actions">
+        <button class="action" id="download" type="button" disabled>Create PDF</button>
+        <a class="action primary" id="email" href="#" target="_blank" role="button" aria-disabled="true">Open email draft</a>
+        <button class="action" id="copy-summary" type="button" disabled>Copy email summary</button>
+      </div>
+      <p class="helper">Create PDF opens the completed sheet so it can be saved or attached. Email opens a pre-addressed draft to <strong>bdowning@iamboundless.org</strong>. If the email app does not open here, copy the summary and paste it into a new email to that address. Entries remain on this page only until it is closed or refreshed.</p>
+      <div class="reset-row"><button class="text-button" id="reset" type="button">Clear sheet</button></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      var intervalCount = 18;
+      var rows = [];
+      var resetArmed = false;
+      var resetTimer = null;
+      var toastTimer = null;
+
+      function pad(n) { return n < 10 ? '0' + n : String(n); }
+      function dateToday() {
+        var d = new Date();
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+      }
+      function timeLabel(totalMinutes) {
+        var h24 = Math.floor(totalMinutes / 60);
+        var mins = totalMinutes % 60;
+        var suffix = h24 >= 12 ? 'PM' : 'AM';
+        var h = h24 % 12 || 12;
+        return h + ':' + pad(mins) + ' ' + suffix;
+      }
+      function escapeHtml(value) {
+        return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function showToast(message) {
+        var toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2500);
+      }
+
+      for (var i = 0; i < intervalCount; i++) {
+        var start = 9 * 60 + i * 10;
+        rows.push({ label: timeLabel(start) + '–' + timeLabel(start + 10), r1: false, r2: false, zero: false, x: false });
+      }
+
+      var intervals = document.getElementById('intervals');
+      var dateInput = document.getElementById('session-date');
+      var staffInput = document.getElementById('staff-name');
+      var downloadButton = document.getElementById('download');
+      var emailButton = document.getElementById('email');
+      var copyButton = document.getElementById('copy-summary');
+      var resetButton = document.getElementById('reset');
+      dateInput.value = dateToday();
+
+      function isComplete(row) { return row.r1 || row.r2 || row.zero || row.x; }
+      function counts() {
+        var result = { r1: 0, r2: 0, zero: 0, x: 0, complete: 0 };
+        rows.forEach(function (row) {
+          if (row.r1) result.r1++;
+          if (row.r2) result.r2++;
+          if (row.zero) result.zero++;
+          if (row.x) result.x++;
+          if (isComplete(row)) result.complete++;
+        });
+        result.observed = result.complete - result.x;
+        return result;
+      }
+
+      function renderRows() {
+        intervals.innerHTML = rows.map(function (row, index) {
+          return '<article class="interval' + (isComplete(row) ? ' complete' : '') + '" data-index="' + index + '">' +
+            '<div class="time">' + escapeHtml(row.label) + '</div>' +
+            '<div class="choices" aria-label="' + escapeHtml(row.label) + '">' +
+              choiceButton(index, 'r1', 'R1', row.r1) +
+              choiceButton(index, 'r2', 'R2', row.r2) +
+              choiceButton(index, 'zero', '0', row.zero) +
+              choiceButton(index, 'x', 'X', row.x) +
+            '</div>' +
+          '</article>';
+        }).join('');
+      }
+
+      function choiceButton(index, code, label, selected) {
+        return '<button type="button" class="choice' + (selected ? ' selected' : '') + '" data-index="' + index + '" data-code="' + code + '" aria-label="' + escapeHtml(label + ' for ' + rows[index].label) + '" aria-pressed="' + (selected ? 'true' : 'false') + '">' + label + '</button>';
+      }
+
+      function updateSummary() {
+        var c = counts();
+        var remaining = intervalCount - c.complete;
+        document.getElementById('progress-label').textContent = c.complete + ' of ' + intervalCount + ' complete';
+        document.getElementById('progress-note').textContent = remaining ? remaining + ' remaining' : 'Ready to send';
+        document.getElementById('progress-fill').style.width = ((c.complete / intervalCount) * 100) + '%';
+        document.getElementById('count-r1').textContent = c.r1;
+        document.getElementById('count-r2').textContent = c.r2;
+        document.getElementById('count-zero').textContent = c.zero;
+        document.getElementById('count-x').textContent = c.x;
+        document.getElementById('count-observed').textContent = c.observed;
+        document.getElementById('summary-status').textContent = remaining ? 'Complete all intervals to finish' : 'All 18 intervals complete';
+        downloadButton.disabled = remaining !== 0;
+        copyButton.disabled = remaining !== 0;
+        emailButton.setAttribute('aria-disabled', remaining !== 0 ? 'true' : 'false');
+        emailButton.href = remaining !== 0 ? '#' : mailtoHref();
+      }
+
+      function refresh() { renderRows(); updateSummary(); }
+
+      intervals.addEventListener('click', function (event) {
+        var button = event.target.closest('button[data-code]');
+        if (!button) return;
+        var index = Number(button.getAttribute('data-index'));
+        var code = button.getAttribute('data-code');
+        var row = rows[index];
+        if (code === 'r1' || code === 'r2') {
+          row[code] = !row[code];
+          if (row[code]) { row.zero = false; row.x = false; }
+        } else if (code === 'zero') {
+          var nextZero = !row.zero;
+          row.r1 = false; row.r2 = false; row.x = false; row.zero = nextZero;
+        } else if (code === 'x') {
+          var nextX = !row.x;
+          row.r1 = false; row.r2 = false; row.zero = false; row.x = nextX;
+        }
+        refresh();
+      });
+
+      function summaryText() {
+        var c = counts();
+        var staff = staffInput.value.trim() || 'Not entered';
+        var lines = [
+          'Butterfly Room — 9:00 AM–12:00 PM',
+          'Date: ' + (dateInput.value || 'Not entered'),
+          'Staff: ' + staff,
+          '',
+          'Session totals',
+          'R1 Dangerous Behavior: ' + c.r1 + ' interval(s)',
+          'R2 Non-Dangerous / Disruptive Behavior: ' + c.r2 + ' interval(s)',
+          '0 No behavior: ' + c.zero + ' interval(s)',
+          'X Not present: ' + c.x + ' interval(s)',
+          'Observed intervals: ' + c.observed + ' of ' + intervalCount,
+          '',
+          'Interval detail'
+        ];
+        rows.forEach(function (row) {
+          var marks = [];
+          if (row.r1) marks.push('R1');
+          if (row.r2) marks.push('R2');
+          if (row.zero) marks.push('0');
+          if (row.x) marks.push('X');
+          lines.push(row.label + ': ' + marks.join(' + '));
+        });
+        return lines.join('\n');
+      }
+
+      function mailtoHref() {
+        var datePart = dateInput.value || dateToday();
+        var subject = 'Butterfly Room data — ' + datePart + ' — 9:00 AM–12:00 PM';
+        return 'mailto:bdowning@iamboundless.org?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(summaryText());
+      }
+
+      function pdfSafe(value) {
+        return String(value)
+          .normalize('NFKD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[–—]/g, '-')
+          .replace(/[^\x20-\x7E]/g, '?')
+          .replace(/([\\()])/g, '\\$1');
+      }
+
+      function makePdf() {
+        var c = counts();
+        var commands = [];
+        function text(x, y, size, value, bold) {
+          commands.push('BT /' + (bold ? 'F2' : 'F1') + ' ' + size + ' Tf ' + x + ' ' + y + ' Td (' + pdfSafe(value) + ') Tj ET');
+        }
+        function line(x1, y1, x2, y2) {
+          commands.push('0.7 w 0.72 G ' + x1 + ' ' + y1 + ' m ' + x2 + ' ' + y2 + ' l S');
+        }
+
+        text(54, 748, 22, 'Butterfly Room', true);
+        text(54, 726, 11, '9:00 AM-12:00 PM', false);
+        text(54, 698, 11, 'Date: ' + (dateInput.value || 'Not entered'), false);
+        text(300, 698, 11, 'Completed by: ' + (staffInput.value.trim() || 'Not entered'), false);
+        text(54, 666, 12, 'Session totals', true);
+        text(54, 646, 10, 'R1: ' + c.r1 + '    R2: ' + c.r2 + '    0: ' + c.zero + '    X: ' + c.x + '    Observed: ' + c.observed + ' of ' + intervalCount, false);
+        line(54, 632, 558, 632);
+        text(58, 611, 10, 'Interval', true);
+        text(316, 611, 10, 'R1', true);
+        text(379, 611, 10, 'R2', true);
+        text(447, 611, 10, '0', true);
+        text(514, 611, 10, 'X', true);
+        line(54, 600, 558, 600);
+
+        rows.forEach(function (row, index) {
+          var y = 581 - index * 24;
+          text(58, y, 9, row.label, false);
+          text(320, y, 10, row.r1 ? 'X' : '', true);
+          text(383, y, 10, row.r2 ? 'X' : '', true);
+          text(447, y, 10, row.zero ? 'X' : '', true);
+          text(514, y, 10, row.x ? 'X' : '', true);
+          line(54, y - 8, 558, y - 8);
+        });
+
+        text(54, 116, 9, 'R1 Dangerous Behavior   |   R2 Non-Dangerous / Disruptive   |   0 No behavior   |   X Not present', false);
+        text(54, 92, 9, 'Email completed sheet to bdowning@iamboundless.org', true);
+
+        var stream = commands.join('\n');
+        var objects = [
+          '<< /Type /Catalog /Pages 2 0 R >>',
+          '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+          '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>',
+          '<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream',
+          '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+          '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>'
+        ];
+        var pdf = '%PDF-1.4\n';
+        var offsets = [0];
+        objects.forEach(function (object, index) {
+          offsets.push(pdf.length);
+          pdf += (index + 1) + ' 0 obj\n' + object + '\nendobj\n';
+        });
+        var xref = pdf.length;
+        pdf += 'xref\n0 ' + (objects.length + 1) + '\n0000000000 65535 f \n';
+        for (var i = 1; i <= objects.length; i++) {
+          pdf += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
+        }
+        pdf += 'trailer\n<< /Size ' + (objects.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF';
+        return new Blob([pdf], { type: 'application/pdf' });
+      }
+
+      function openPdf(blob, filename) {
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+        showToast('PDF opened — use Share to save or email it');
+      }
+
+      downloadButton.addEventListener('click', function () {
+        var datePart = dateInput.value || dateToday();
+        var filename = 'butterfly-room-' + datePart + '-9am-12pm.pdf';
+        var blob = makePdf();
+        var file;
+        try { file = new File([blob], filename, { type: 'application/pdf' }); } catch (error) { file = null; }
+        if (file && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({
+            files: [file],
+            title: 'Butterfly Room data — ' + datePart,
+            text: 'Completed Butterfly Room data sheet for 9:00 AM–12:00 PM.'
+          }).catch(function (error) {
+            if (error && error.name !== 'AbortError') openPdf(blob, filename);
+          });
+        } else {
+          openPdf(blob, filename);
+        }
+      });
+
+      function copySummary() {
+        var text = summaryText();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+          var area = document.createElement('textarea');
+          area.value = text;
+          area.setAttribute('readonly', '');
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          var copied = document.execCommand('copy');
+          area.remove();
+          copied ? resolve() : reject(new Error('Copy unavailable'));
+        });
+      }
+
+      copyButton.addEventListener('click', function () {
+        copySummary().then(function () {
+          showToast('Email summary copied');
+        }).catch(function () {
+          showToast('Could not copy here — use the PDF instead');
+        });
+      });
+
+      emailButton.addEventListener('click', function (event) {
+        if (emailButton.getAttribute('aria-disabled') === 'true') {
+          event.preventDefault();
+          showToast('Complete all 18 intervals first');
+        }
+      });
+
+      dateInput.addEventListener('change', updateSummary);
+      staffInput.addEventListener('input', updateSummary);
+
+      resetButton.addEventListener('click', function () {
+        if (!resetArmed) {
+          resetArmed = true;
+          resetButton.textContent = 'Tap again to clear';
+          showToast('Tap “Clear sheet” again to confirm');
+          clearTimeout(resetTimer);
+          resetTimer = setTimeout(function () {
+            resetArmed = false;
+            resetButton.textContent = 'Clear sheet';
+          }, 4000);
+          return;
+        }
+        clearTimeout(resetTimer);
+        resetArmed = false;
+        rows.forEach(function (row) { row.r1 = false; row.r2 = false; row.zero = false; row.x = false; });
+        staffInput.value = '';
+        dateInput.value = dateToday();
+        resetButton.textContent = 'Clear sheet';
+        refresh();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast('Sheet cleared');
+      });
+
+      refresh();
+    })();
+  </script>
+</body>
+</html>
